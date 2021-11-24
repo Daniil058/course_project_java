@@ -26,23 +26,17 @@ public class FileDownloadController {
     private ServletContext servletContext;
 
     @RequestMapping("/download")
-    public ResponseEntity<InputStreamResource> downloadFile1(
-            @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
-
+    public ResponseEntity<InputStreamResource> downloadFile(
+            @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName
+    ) throws IOException
+    {
         MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, fileName);
-        System.out.println("fileName: " + fileName);
-        System.out.println("mediaType: " + mediaType);
-
         File file = new File(DIRECTORY + "/" + fileName);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-
         return ResponseEntity.ok()
-                // Content-Disposition
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                // Content-Type
                 .contentType(mediaType)
-                // Content-Length
-                .contentLength(file.length()) //
+                .contentLength(file.length())
                 .body(resource);
     }
 
